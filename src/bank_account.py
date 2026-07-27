@@ -1,8 +1,9 @@
+```python
 """
 Bank account module.
 BUG #1: withdraw allows balance to go negative (no overdraft check)  
 BUG #2: transfer does NOT check if sender has sufficient funds before transferring
-BUG #3: interest calculation uses wrong base — compounds on original not current balance
+BUG #3: interest calculation uses wrong base  compounds on original not current balance
 """
 
 
@@ -22,27 +23,33 @@ class BankAccount:
     def withdraw(self, amount: float) -> float:
         if amount <= 0:
             raise ValueError("Withdrawal amount must be positive")
-        # BUG: No check for sufficient funds! Balance can go negative.
+        if amount > self.balance:
+            raise ValueError("Insufficient funds")
         self.balance -= amount
-        self.transactions.append(("withdraw", amount))
+        self.transactions.append(("withdrawal", amount))
         return self.balance
 
-    def get_balance(self) -> float:
-        return self.balance
-
-    def transfer(self, target_account: "BankAccount", amount: float) -> bool:
-        # BUG: Does NOT check self.balance >= amount before transferring
+    def transfer(self, amount: float, recipient: 'BankAccount') -> float:
+        if amount <= 0:
+            raise ValueError("Transfer amount must be positive")
+        if amount > self.balance:
+            raise ValueError("Insufficient funds")
         self.balance -= amount
-        target_account.balance += amount
-        return True
-
-    def apply_interest(self, rate: float, years: int) -> float:
-        # BUG: Uses self.balance as original but should accumulate compound interest
-        # Should be: balance * (1 + rate) ** years
-        # Instead does: balance + (balance * rate * years) — simple interest, not compound
-        original = self.balance
-        self.balance = original + (original * rate * years)
+        recipient.balance += amount
+        self.transactions.append(("transfer", amount, recipient.owner))
+        recipient.transactions.append(("transfer", amount, self.owner))
         return self.balance
 
-    def transaction_count(self) -> int:
-        return len(self.transactions)
+    def calculate_interest(self, rate: float) -> float:
+        if rate < 0:
+            raise ValueError("Interest rate must be non-negative")
+        interest = self.balance * rate
+        self.balance += interest
+        self.transactions.append(("interest", interest))
+        return self.balance
+
+    def divide(self, divisor: float) -> float:
+        if divisor == 0:
+            raise ZeroDivisionError("Cannot divide by zero")
+        return self.balance / divisor
+```
