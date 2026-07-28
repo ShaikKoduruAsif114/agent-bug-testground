@@ -1,75 +1,64 @@
-# tests/test_string_utils.py
+# tests/test_calculator.py
 import pytest
-from src.string_utils import (
-    reverse_string,
-    is_palindrome,
-    count_words,
-    capitalize_words,
-    truncate,
-    count_vowels,
-    remove_duplicates,
+from src.calculator import (
+    add,
+    subtract,
+    multiply,
+    divide,
+    percentage,
+    power,
+    factorial,
 )
 
-def test_reverse_string():
-    """Test that reverse_string function works correctly."""
-    input_str = "hello"
-    expected_output = "olleh"
-    assert reverse_string(input_str) == expected_output
+def test_add():
+    """Test the add function."""
+    assert add(2, 3) == 5
+    assert add(-2, 3) == 1
+    assert add(-2, -3) == -5
 
-def test_is_palindrome():
-    """Test that is_palindrome function works correctly for different cases."""
-    # Test with a palindrome string
-    palindrome_str = "madam"
-    assert is_palindrome(palindrome_str) == True
+def test_subtract():
+    """Test the subtract function."""
+    assert subtract(2, 3) == -1
+    assert subtract(-2, 3) == -5
+    assert subtract(-2, -3) == 1
 
-    # Test with a non-palindrome string
-    non_palindrome_str = "hello"
-    assert is_palindrome(non_palindrome_str) == False
+def test_multiply():
+    """Test the multiply function."""
+    assert multiply(2, 3) == 6
+    assert multiply(-2, 3) == -6
+    assert multiply(-2, -3) == 6
 
-    # Test with a mixed-case palindrome string
-    mixed_case_palindrome_str = "MaDaM"
-    assert is_palindrome(mixed_case_palindrome_str) == True
+def test_divide():
+    """Test the divide function."""
+    assert divide(6, 3) == 2
+    assert divide(-6, 3) == -2
+    assert divide(-6, -3) == 2
+    with pytest.raises(ValueError):
+        divide(6, 0)
 
-def test_count_words():
-    """Test that count_words function works correctly."""
-    input_str = "hello world this is a test"
-    expected_output = 6
-    assert count_words(input_str) == expected_output
+def test_percentage():
+    """Test the percentage function."""
+    assert percentage(100, 25) == 25
+    assert percentage(50, 50) == 25
+    assert percentage(0, 100) == 0
 
-def test_capitalize_words():
-    """Test that capitalize_words function works correctly."""
-    input_str = "hello world this is a test"
-    expected_output = "Hello World This Is A Test"
-    assert capitalize_words(input_str) == expected_output
+def test_power():
+    """Test the power function."""
+    assert power(2, 3) == 8
+    assert power(-2, 3) == -8
+    assert power(2, 0) == 1
 
-def test_truncate():
-    """Test that truncate function works correctly."""
-    # Test with a string that is shorter than the max length
-    input_str = "hello"
-    max_length = 10
-    expected_output = "hello"
-    assert truncate(input_str, max_length) == expected_output
+def test_factorial():
+    """Test the factorial function."""
+    assert factorial(0) == 1
+    assert factorial(1) == 1
+    assert factorial(2) == 2
+    assert factorial(3) == 6
+    assert factorial(4) == 24
+    with pytest.raises(RecursionError):
+        factorial(1000)  # This will exceed the maximum recursion depth
 
-    # Test with a string that is longer than the max length
-    input_str = "hello world this is a test"
-    max_length = 10
-    expected_output = "hello w..."
-    assert truncate(input_str, max_length) == expected_output
-
-def test_count_vowels():
-    """Test that count_vowels function works correctly."""
-    input_str = "hello world"
-    expected_output = 3
-    assert count_vowels(input_str) == expected_output
-
-def test_remove_duplicates():
-    """Test that remove_duplicates function works correctly."""
-    input_list = [1, 2, 2, 3, 4, 4, 5, 6, 6]
-    expected_output = [1, 2, 3, 4, 5, 6]
-    assert remove_duplicates(input_list) == expected_output
-
-def test_remove_duplicates_with_strings():
-    """Test that remove_duplicates function works correctly with strings."""
-    input_list = ["hello", "world", "hello", "world", "test"]
-    expected_output = ["hello", "world", "test"]
-    assert remove_duplicates(input_list) == expected_output
+def test_divide_by_zero():
+    """Test that divide raises a ValueError when divisor is zero."""
+    with pytest.raises(ValueError):
+        divide(10, 0)
